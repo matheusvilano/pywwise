@@ -4,8 +4,8 @@
 from collections.abc import Sequence as _Sequence
 
 from pywwise.descriptors import WwiseProperty
-from pywwise.objects.syncs import Rtpc
-from pywwise.objects.types import WwiseObject
+from pywwise.objects.abc import WwiseObject
+from pywwise.objects.rtpc import Rtpc
 
 
 class Metadata(WwiseObject):
