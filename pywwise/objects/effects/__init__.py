@@ -13,6 +13,7 @@ from pywwise.objects.effects.wwise_guitar_distortion import WwiseGuitarDistortio
 from pywwise.objects.effects.wwise_harmonizer import WwiseHarmonizer
 from pywwise.objects.effects.wwise_matrix_reverb import WwiseMatrixReverb
 from pywwise.objects.effects.wwise_meter import WwiseMeter
+from pywwise.objects.effects.wwise_multiband_meter import WwiseMultibandMeter
 from pywwise.objects.effects.wwise_parametric_eq import WwiseParametricEq
 from pywwise.objects.effects.wwise_peak_limiter import WwisePeakLimiter
 from pywwise.objects.effects.wwise_pitch_shifter import WwisePitchShifter

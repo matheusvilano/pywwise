@@ -3184,6 +3184,8 @@ class EParametricEqFilterType(_IntEnum):
     LOW_SHELF = 4
     HIGH_SHELF = 5
     PEAKING = 6
+    LOW_PASS_Q = 7
+    HIGH_PASS_Q = 8
 
 
 class EPitchShifterInput(_IntEnum):
@@ -3447,5 +3449,45 @@ class ESearchCriteriaUsingOperator(_IntEnum):
     """An enumeration of possible values for using operators in the search criteria."""
     IS_USING = 0
     IS_NOT_USING = 1
+    
+    
+class EDecibelsPerOctave(_IntEnum):
+    """An enumeration of possible values for decibels per octave, usually used in frequency rolloff band settings."""
+    DISABLED = 0
+    TWELVE_DECIBELS_PER_OCTAVE = 1
+    TWENTY_FOUR_DECIBELS_PER_OCTAVE = 2
+    THIRTY_SIX_DECIBELS_PER_OCTAVE = 3
+    FORTY_EIGHT_DECIBELS_PER_OCTAVE = 4
+    
+
+class EMixdownConfig(_IntEnum):
+    NO_MIXDOWN = 0
+    MONO = 16641
+    
+
+class ESidechainMixConfig(_IntEnum):
+    SAME_AS_PRIMARY_MAIN_MIX = 3584
+    SAME_AS_PRIMARY_PASSTHROUGH_MIX = 3840
+    ONE_POINT_ZERO = 16641
+    TWO_POINT_ZERO = 12546
+    TWO_POINT_ONE = 45315
+    THREE_POINT_ZERO = 28931
+    FOUR_POINT_ZERO = 6304004
+    FIVE_POINT_ONE = 6353158
+    SEVEN_POINT_ONE = 6549768
+    FOUR_POINT_ZERO_POINT_FOUR = 761278728
+    FIVE_POINT_ONE_POINT_TWO = 90239240
+    FIVE_POINT_ONE_POINT_FOUR = 761327882
+    SEVEN_POINT_ONE_POINT_TWO = 90435850
+    SEVEN_POINT_ONE_POINT_FOUR = 761524492
+    AMBISONICS_FIRST_ORDER = 516
+    AMBISONICS_SECOND_ORDER = 521
+    AMBISONICS_THIRD_ORDER = 528
+    AMBISONICS_FOURTH_ORDER = 537
+    AMBISONICS_FIFTH_ORDER = 548
+    AURO_TEN_POINT_ONE = 769716491
+    AURO_ELEVEN_POINT_ONE = 803270924
+    AURO_THIRTEEN_POINT_ONE = 803467534
+    LFE = 33025
 
 # endregion
