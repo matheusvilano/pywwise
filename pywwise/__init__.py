@@ -1,6 +1,7 @@
 # Copyright 2024 Matheus Vilano
 # SPDX-License-Identifier: Apache-2.0
 
+from asyncio import new_event_loop, get_event_loop, set_event_loop
 from logging import CRITICAL as _LEVEL_CRITICAL, getLogger as _getLogger
 
 from waapi import CallbackExecutor, SequentialThreadExecutor
@@ -13,7 +14,14 @@ from pywwise.structs import *
 from pywwise.waapi.ak import Ak as _Ak, WwiseConnection
 from pywwise.waql import *
 
+
 _getLogger("waapi").setLevel(_LEVEL_CRITICAL)
+
+try:
+    get_event_loop()
+except RuntimeError:
+    loop = new_event_loop()
+    set_event_loop(loop)
 
 
 def new_waapi_connection(url: str = "ws://127.0.0.1:8080/waapi", *, allow_exception: bool = False,
