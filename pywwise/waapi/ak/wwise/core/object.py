@@ -476,16 +476,22 @@ class Object:
         args = dict()
         args["object"] = obj if not isinstance(obj, Name) else f"{EObjectType.ATTENUATION.get_type_name()}:{obj}"
         args["curveType"] = etype.value
+        
         if platform is not None:
             args["platform"] = platform
         
         results = self._client.call("ak.wwise.core.object.getAttenuationCurve", args)
+        
         if not results:  # invalid or empty
             return None
         
-        points = tuple(GraphPoint2D(Vector2(point["x"], point["y"]),
-                                    EnumStatics.from_value(EAttenuationCurveShape, point["shape"]))
-                       for point in results["points"])
+        points = results.get("points", dict())
+        
+        def get_shape(point) -> EAttenuationCurveShape:
+            return EnumStatics.from_value(EAttenuationCurveShape, point["shape"])
+        
+        points = tuple(GraphPoint2D(Vector2(point["x"], point["y"]), get_shape(point)) for point in points)
+        
         usage = EnumStatics.from_value(EAttenuationCurveUsage, results["use"])
         etype = EnumStatics.from_value(EAttenuationCurveType, results["curveType"])
         
