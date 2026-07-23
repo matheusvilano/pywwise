@@ -1873,6 +1873,10 @@ class ENameConflictStrategy(_StrEnum):
     REPLACE = "replace"
     """Replace the name/object that already exists."""
     
+    MERGE = "merge"
+    """The object at destination is re-used, and the specified properties, references and children are merged to the
+    destination leaving untouched the rest of the object."""
+    
     FAIL = "fail"
     """Prevent the operation that caused the name conflict."""
 
