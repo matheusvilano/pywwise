@@ -1,5 +1,6 @@
 # Copyright 2024 Matheus Vilano
 # SPDX-License-Identifier: Apache-2.0
+from typing import Union
 
 from waapi import WaapiClient as _WaapiClient
 
@@ -139,7 +140,7 @@ class SourceControl:
         return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
     
     def set_provider(self, provider: str, server: str = "localhost", port: str = "", username: str = "",
-                     password: str = "", workspace: str = "", host: str = "") -> tuple[LogItem, ...]:
+                     password: str = "", workspace: str = "", host: str = "") -> Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_setprovider.html \n
         Change the source control provider and credentials. This is the same setting as the Source
@@ -158,4 +159,8 @@ class SourceControl:
         args = {"provider": provider, "server": server, "port": port, "username": username, "password": password,
                 "workspace": workspace, "host": host}
         result = self._client.call("ak.wwise.core.sourceControl.setProvider", args)
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple(LogItem.from_dict(log_item) for log_item in result["log"])
+        else:
+            return False
