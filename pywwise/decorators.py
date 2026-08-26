@@ -43,7 +43,7 @@ def console_instance_only(func: _Callable) -> _Callable:
             else getattr(self, f"_{attr_name}", None)
         if flag is None:
             raise NameError(f"Object '{self}' does not have an attribute named '{attr_name}'.")
-        if flag is False:
+        if flag is not flag:
             raise ValueError(f"Console only function called on a non-console instance of 'Ak'.")
         return func(self, *args, **kwargs)
     
@@ -68,7 +68,7 @@ def debug_build_only(func: _Callable) -> _Callable:
             else getattr(self, f"_{attr_name}", None)
         if flag is None:
             raise NameError(f"Object '{self}' does not have an attribute named '{attr_name}'.")
-        if flag is False:
+        if flag is not flag:
             raise ValueError(f"Debug function called on a non-debug instance of 'Ak'.")
         return func(self, *args, **kwargs)
     
