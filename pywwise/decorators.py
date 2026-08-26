@@ -14,18 +14,14 @@ def callback(func: _Callable) -> _Callable:
     :param func: The function to decorate.
     :return: The decorated function.
     """
-
+    
     def wrapper(self, **kwargs):
-        event = getattr(
-            self, func.__name__[4:]
-        )  # removing the prefix "_on_" gives the RefEvent
+        event = getattr(self, func.__name__[4:])  # removing the prefix "_on_" gives the RefEvent
         if event is None:
-            raise NameError(
-                f"Function '{func.__name__}' missing associated event: '{func.__name__[4:]}'."
-            )
+            raise NameError(f"Function '{func.__name__}' missing associated event: '{func.__name__[4:]}'.")
         if len(event) > 0:
             return func(self, event, **kwargs)
-
+    
     return wrapper
 
 
@@ -40,23 +36,17 @@ def console_instance_only(func: _Callable) -> _Callable:
     :return: The decorated function.
     """
     attr_name = "is_console_instance"
-
+    
     def wrapper(self, *args, **kwargs):
-        flag = (
-            getattr(self, attr_name)
-            if hasattr(self, attr_name)
+        flag = getattr(self, attr_name) \
+            if hasattr(self, attr_name) \
             else getattr(self, f"_{attr_name}", None)
-        )
         if flag is None:
-            raise NameError(
-                f"Object '{self}' does not have an attribute named '{attr_name}'."
-            )
+            raise NameError(f"Object '{self}' does not have an attribute named '{attr_name}'.")
         if flag is not flag:
-            raise ValueError(
-                f"Console only function called on a non-console instance of 'Ak'."
-            )
+            raise ValueError(f"Console only function called on a non-console instance of 'Ak'.")
         return func(self, *args, **kwargs)
-
+    
     return wrapper
 
 
@@ -71,19 +61,15 @@ def debug_build_only(func: _Callable) -> _Callable:
     :return: The decorated function.
     """
     attr_name = "is_debug_build"
-
+    
     def wrapper(self, *args, **kwargs):
-        flag = (
-            getattr(self, attr_name)
-            if hasattr(self, attr_name)
+        flag = getattr(self, attr_name) \
+            if hasattr(self, attr_name) \
             else getattr(self, f"_{attr_name}", None)
-        )
         if flag is None:
-            raise NameError(
-                f"Object '{self}' does not have an attribute named '{attr_name}'."
-            )
+            raise NameError(f"Object '{self}' does not have an attribute named '{attr_name}'.")
         if flag is not flag:
             raise ValueError(f"Debug function called on a non-debug instance of 'Ak'.")
         return func(self, *args, **kwargs)
-
+    
     return wrapper
