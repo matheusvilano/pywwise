@@ -35,7 +35,7 @@ class SourceControl:
         Add files to source control. Equivalent to Mark for Add for Perforce.
         :param files: Array of files to add. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.add", {"files": files})
@@ -53,7 +53,7 @@ class SourceControl:
         Check out files from source control. Equivalent to Check Out for Perforce.
         :param files: Array of files to check out. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call(
@@ -74,7 +74,7 @@ class SourceControl:
         :param files: Array of files to commit. File paths must be absolute.
         :param message: Description message for the commit.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call(
@@ -94,7 +94,7 @@ class SourceControl:
         Delete files from source control. Equivalent to Mark for Delete for Perforce.
         :param files: Array of files to delete. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call(
@@ -164,10 +164,8 @@ class SourceControl:
         result = self._client.call(
             "ak.wwise.core.sourceControl.delete", {"files": files}
         )
-
         if result is None:
             return (), ()
-
         logs = tuple([LogItem.from_dict(result["log"])])
         statuses = tuple(
             [
@@ -188,7 +186,7 @@ class SourceControl:
         newFiles. Equivalent to Move for Perforce.
         :param files: Array of files to move. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         original_paths, new_paths = zip(*files)
         args = {"files": original_paths, "newFiles": new_paths}
@@ -207,7 +205,7 @@ class SourceControl:
         Revert changes to files in source control.
         :param files: Array of files to revert. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call(
@@ -243,7 +241,7 @@ class SourceControl:
         :param workspace: Workspace name. This value is required for Perforce.
         :param host: Host name. This value is required for Perforce.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns an empty tuple. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         args = {
             "provider": provider,
