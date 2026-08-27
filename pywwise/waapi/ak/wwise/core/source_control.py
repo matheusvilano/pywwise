@@ -5,6 +5,7 @@ from pywwise.aliases import ListOrTuple, SystemPath
 from pywwise.enums import EReturnOptions, ESourceControlSearchFilter, ESourceFileReturnOptions
 from pywwise.primitives import OriginalsPath
 from pywwise.structs import LogItem, SourceControlStatus, SourceFileInfo, WwiseObjectInfo
+from types import NoneType as _NoneType
 from typing import Union as _Union
 from waapi import WaapiClient as _WaapiClient
 
@@ -19,13 +20,13 @@ class SourceControl:
         """
         self._client = client
     
-    def add(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
+    def add(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_add.html \n
         Add files to source control. Equivalent to Mark for Add for Perforce.
         :param files: Array of files to add. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.add", {"files": files})
@@ -33,7 +34,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def check_out(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
@@ -41,7 +42,7 @@ class SourceControl:
         Check out files from source control. Equivalent to Check Out for Perforce.
         :param files: Array of files to check out. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.checkOut", {"files": files})
@@ -49,7 +50,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def commit(self, files: ListOrTuple[SystemPath], message: str) -> _Union[tuple[LogItem, ...], bool]:
         """
@@ -58,7 +59,7 @@ class SourceControl:
         :param files: Array of files to commit. File paths must be absolute.
         :param message: Description message for the commit.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.commit", {"files": files, "message": message})
@@ -66,7 +67,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def delete(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
@@ -74,7 +75,7 @@ class SourceControl:
         Delete files from source control. Equivalent to Mark for Delete for Perforce.
         :param files: Array of files to delete. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.delete", {"files": files})
@@ -82,7 +83,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def get_source_files(self, folder: str = None, recursive: bool = True,
                          search_filter: ESourceControlSearchFilter = ESourceControlSearchFilter.ALL) -> tuple[
@@ -141,7 +142,7 @@ class SourceControl:
         newFiles. Equivalent to Move for Perforce.
         :param files: Array of files to move. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         original_paths, new_paths = zip(*files)
         args = {"files": original_paths, "newFiles": new_paths}
@@ -150,7 +151,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def revert(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
@@ -158,7 +159,7 @@ class SourceControl:
         Revert changes to files in source control.
         :param files: Array of files to revert. File paths must be absolute.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.revert", {"files": files})
@@ -166,7 +167,7 @@ class SourceControl:
         if result is not None:
             return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
         
-        return False
+        return None
     
     def set_provider(self, provider: str, server: str = "localhost", port: str = "", username: str = "",
                      password: str = "", workspace: str = "", host: str = "") -> _Union[tuple[LogItem, ...], bool]:
@@ -184,7 +185,7 @@ class SourceControl:
         :param workspace: Workspace name. This value is required for Perforce.
         :param host: Host name. This value is required for Perforce.
         :return: A tuple containing log items generating during the request. If the request is done from a console
-        instance returns None. If the request fails while using a console instance, it returns False.
+        instance returns None. If the request fails while using a console instance, it returns None.
         """
         args = {"provider": provider, "server": server, "port": port, "username": username, "password": password,
                 "workspace": workspace, "host": host}
@@ -193,4 +194,4 @@ class SourceControl:
         if result is not None:
             return tuple(LogItem.from_dict(log_item) for log_item in result["log"])
         
-        return False
+        return None
