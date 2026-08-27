@@ -1,13 +1,12 @@
 # Copyright 2024 Matheus Vilano
 # SPDX-License-Identifier: Apache-2.0
-from typing import Union
-
-from waapi import WaapiClient as _WaapiClient
 
 from pywwise.aliases import ListOrTuple, SystemPath
 from pywwise.enums import EReturnOptions, ESourceControlSearchFilter, ESourceFileReturnOptions
 from pywwise.primitives import OriginalsPath
 from pywwise.structs import LogItem, SourceControlStatus, SourceFileInfo, WwiseObjectInfo
+from typing import Union as _Union
+from waapi import WaapiClient as _WaapiClient
 
 
 class SourceControl:
@@ -20,50 +19,70 @@ class SourceControl:
         """
         self._client = client
     
-    def add(self, files: ListOrTuple[SystemPath]) -> tuple[LogItem, ...]:
+    def add(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_add.html \n
         Add files to source control. Equivalent to Mark for Add for Perforce.
         :param files: Array of files to add. File paths must be absolute.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.add", {"files": files})
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
-    def check_out(self, files: ListOrTuple[SystemPath]) -> tuple[LogItem, ...]:
+    def check_out(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_checkout.html \n
         Check out files from source control. Equivalent to Check Out for Perforce.
         :param files: Array of files to check out. File paths must be absolute.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.checkOut", {"files": files})
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
-    def commit(self, files: ListOrTuple[SystemPath], message: str) -> tuple[LogItem, ...]:
+    def commit(self, files: ListOrTuple[SystemPath], message: str) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_commit.html \n
         Commit files to source control. Equivalent to Submit Changes for Perforce.
         :param files: Array of files to commit. File paths must be absolute.
         :param message: Description message for the commit.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.commit", {"files": files, "message": message})
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
-    def delete(self, files: ListOrTuple[SystemPath]) -> tuple[LogItem, ...]:
+    def delete(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_delete.html \n
         Delete files from source control. Equivalent to Mark for Delete for Perforce.
         :param files: Array of files to delete. File paths must be absolute.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.delete", {"files": files})
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
     def get_source_files(self, folder: str = None, recursive: bool = True,
                          search_filter: ESourceControlSearchFilter = ESourceControlSearchFilter.ALL) -> tuple[
@@ -115,32 +134,42 @@ class SourceControl:
                                               result.get("result", dict()).get("owner", ""))])
         return logs, statuses
     
-    def move(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> tuple[LogItem, ...]:
+    def move(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_move.html \n
         Move or rename files in source control. Always pass the same number of elements in files and
         newFiles. Equivalent to Move for Perforce.
         :param files: Array of files to move. File paths must be absolute.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         original_paths, new_paths = zip(*files)
         args = {"files": original_paths, "newFiles": new_paths}
         result = self._client.call("ak.wwise.core.sourceControl.move", args)
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
-    def revert(self, files: ListOrTuple[SystemPath]) -> tuple[LogItem, ...]:
+    def revert(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_revert.html \n
         Revert changes to files in source control.
         :param files: Array of files to revert. File paths must be absolute.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         files = list(dict.fromkeys(files))  # convert to list of unique items
         result = self._client.call("ak.wwise.core.sourceControl.revert", {"files": files})
-        return tuple([LogItem.from_dict(result["log"])] if result is not None else [])
+        
+        if result is not None:
+            return tuple([LogItem.from_dict(log_item) for log_item in result["log"]])
+        
+        return False
     
     def set_provider(self, provider: str, server: str = "localhost", port: str = "", username: str = "",
-                     password: str = "", workspace: str = "", host: str = "") -> Union[tuple[LogItem, ...], bool]:
+                     password: str = "", workspace: str = "", host: str = "") -> _Union[tuple[LogItem, ...], bool]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_setprovider.html \n
         Change the source control provider and credentials. This is the same setting as the Source
@@ -154,7 +183,8 @@ class SourceControl:
         :param password: User password or ticket. This value is required for Perforce.
         :param workspace: Workspace name. This value is required for Perforce.
         :param host: Host name. This value is required for Perforce.
-        :return: A tuple containing log items generating during the request.
+        :return: A tuple containing log items generating during the request. If the request is done from a console
+        instance returns None. If the request fails while using a console instance, it returns False.
         """
         args = {"provider": provider, "server": server, "port": port, "username": username, "password": password,
                 "workspace": workspace, "host": host}
@@ -162,5 +192,5 @@ class SourceControl:
         
         if result is not None:
             return tuple(LogItem.from_dict(log_item) for log_item in result["log"])
-        else:
-            return False
+        
+        return False
