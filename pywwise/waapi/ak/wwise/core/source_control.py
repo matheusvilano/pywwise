@@ -36,7 +36,7 @@ class SourceControl:
         
         return None
     
-    def check_out(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
+    def check_out(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_checkout.html \n
         Check out files from source control. Equivalent to Check Out for Perforce.
@@ -52,7 +52,7 @@ class SourceControl:
         
         return None
     
-    def commit(self, files: ListOrTuple[SystemPath], message: str) -> _Union[tuple[LogItem, ...], bool]:
+    def commit(self, files: ListOrTuple[SystemPath], message: str) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_commit.html \n
         Commit files to source control. Equivalent to Submit Changes for Perforce.
@@ -69,7 +69,7 @@ class SourceControl:
         
         return None
     
-    def delete(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
+    def delete(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_delete.html \n
         Delete files from source control. Equivalent to Mark for Delete for Perforce.
@@ -135,7 +135,7 @@ class SourceControl:
                                               result.get("result", dict()).get("owner", ""))])
         return logs, statuses
     
-    def move(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> _Union[tuple[LogItem, ...], bool]:
+    def move(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_move.html \n
         Move or rename files in source control. Always pass the same number of elements in files and
@@ -153,7 +153,7 @@ class SourceControl:
         
         return None
     
-    def revert(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], bool]:
+    def revert(self, files: ListOrTuple[SystemPath]) -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_revert.html \n
         Revert changes to files in source control.
@@ -170,7 +170,7 @@ class SourceControl:
         return None
     
     def set_provider(self, provider: str, server: str = "localhost", port: str = "", username: str = "",
-                     password: str = "", workspace: str = "", host: str = "") -> _Union[tuple[LogItem, ...], bool]:
+                     password: str = "", workspace: str = "", host: str = "") -> _Union[tuple[LogItem, ...], _NoneType]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_setprovider.html \n
         Change the source control provider and credentials. This is the same setting as the Source
