@@ -1,13 +1,15 @@
 # Copyright 2024 Matheus Vilano
 # SPDX-License-Identifier: Apache-2.0
 
+from types import NoneType as _NoneType
+from typing import Union as _Union
+
+from waapi import WaapiClient as _WaapiClient
+
 from pywwise.aliases import ListOrTuple, SystemPath
 from pywwise.enums import EReturnOptions, ESourceControlSearchFilter, ESourceFileReturnOptions
 from pywwise.primitives import OriginalsPath
 from pywwise.structs import LogItem, SourceControlStatus, SourceFileInfo, WwiseObjectInfo
-from types import NoneType as _NoneType
-from typing import Union as _Union
-from waapi import WaapiClient as _WaapiClient
 
 
 class SourceControl:
@@ -113,13 +115,11 @@ class SourceControl:
         
         returns = list[SourceFileInfo]()
         for result in results.get("return", ()):
-            if is_file := result.get("file"):
-                usage = tuple([WwiseObjectInfo.from_dict(obj) for obj in result.get("usage", ())])
-                is_missing = result.get("isMissing")
-                returns.append(SourceFileInfo(OriginalsPath(is_file), usage, is_missing))
-            else:
-                folder = result.get("folder")
-                returns.append(SourceFileInfo(OriginalsPath(folder), (), False))
+            is_file = True if result.get("file") else False
+            path = OriginalsPath(result.get("file")) if is_file else OriginalsPath(result.get("folder"))
+            usage = tuple([WwiseObjectInfo.from_dict(obj) for obj in result.get("usage", ())])
+            is_missing = result.get("isMissing", False)
+            returns.append(SourceFileInfo(path, usage, is_missing, is_file))
         return tuple(returns)
     
     def get_status(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> tuple[

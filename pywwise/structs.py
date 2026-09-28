@@ -506,7 +506,7 @@ class PluginLibraryInfo:
     
     static: str
     """The name of the Static Lib for this plugin."""
-    
+
 
 @_dataclass
 class SoundBankGenerationInfo:
@@ -1004,6 +1004,9 @@ class SourceFileInfo:
     
     is_missing: bool
     """Indicates if the file is absent in the source manager."""
+    
+    is_file: bool
+    """Indicates if the source file represents a file or a folder in the originals Wwise folder."""
     
     @property
     def is_used(self) -> bool:
