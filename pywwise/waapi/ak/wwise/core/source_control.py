@@ -101,7 +101,9 @@ class SourceControl:
         if folder is not None:
             args["folder"] = folder
         
-        options = {"return": [ESourceFileReturnOptions.FILE, ESourceFileReturnOptions.USAGE,
+        options = {"return": [ESourceFileReturnOptions.FOLDER,
+                              ESourceFileReturnOptions.FILE,
+                              ESourceFileReturnOptions.USAGE,
                               ESourceFileReturnOptions.IS_MISSING],
                    "objectReturn": EReturnOptions.get_defaults()}
         
