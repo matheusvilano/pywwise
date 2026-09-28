@@ -999,9 +999,6 @@ class SourceFileInfo:
     path: OriginalsPath
     """The absolute path of the source file."""
     
-    folder: OriginalsPath
-    """The absolute path of the source folder."""
-    
     usage: tuple[WwiseObjectInfo, ...]
     """The Wwise objects that use the source file."""
     
