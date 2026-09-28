@@ -101,7 +101,9 @@ class SourceControl:
         if folder is not None:
             args["folder"] = folder
         
-        options = {"return": [ESourceFileReturnOptions.FILE, ESourceFileReturnOptions.USAGE,
+        options = {"return": [ESourceFileReturnOptions.FOLDER,
+                              ESourceFileReturnOptions.FILE,
+                              ESourceFileReturnOptions.USAGE,
                               ESourceFileReturnOptions.IS_MISSING],
                    "objectReturn": EReturnOptions.get_defaults()}
         
@@ -112,9 +114,10 @@ class SourceControl:
         returns = list[SourceFileInfo]()
         for result in results.get("return", ()):
             file = OriginalsPath(result["file"])
+            folder = OriginalsPath(result["folder"])
             usage = tuple([WwiseObjectInfo.from_dict(obj) for obj in result.get("usage", ())])
             is_missing = result["isMissing"]
-            returns.append(SourceFileInfo(file, usage, is_missing))
+            returns.append(SourceFileInfo(file, folder, usage, is_missing))
         return tuple(returns)
     
     def get_status(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> tuple[
