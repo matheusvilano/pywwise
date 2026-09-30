@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from typing import Any as _Any, Self as _Self, TYPE_CHECKING as _TYPE_CHECKING
-from pathlib import Path as _Path
 
 if _TYPE_CHECKING:
     from pywwise.descriptors import WwiseProperty
@@ -507,7 +506,7 @@ class PluginLibraryInfo:
     
     static: str
     """The name of the Static Lib for this plugin."""
-
+    
 
 @_dataclass
 class SoundBankGenerationInfo:
@@ -995,32 +994,40 @@ class SourceControlStatus:
 
 @_dataclass
 class SourceFileInfo:
-    """Stores source control and project information about a source file."""
+    """Stores source control and project information about a source file or directory."""
     
-    path: OriginalsPath
-    """The relative path of the file or folder to Wwise's Originals folder"""
+    absolute_path: SystemPath
+    """The absolute path of the source file or directory."""
     
-    usage: tuple[WwiseObjectInfo, ...]
-    """The Wwise objects that use the source file."""
+    relative_path: OriginalsPath
+    """The relative path of the source file or directory."""
     
-    is_missing: bool
-    """Indicates if the file is absent in the source manager."""
+    reported_usage: tuple[WwiseObjectInfo, ...]
+    """The Wwise objects that use the source file. If `absolute_path` and `relative_path` are pointing to a directory, 
+    this container will be empty."""
+    
+    reported_missing: bool
+    """Indicates if the file or directory is absent in the source manager."""
     
     @property
-    def is_used(self) -> bool:
+    def reported_used(self) -> bool:
         """
         Whether the source file is currently used in the project.
         :return: `True` if `usage` is not empty; else, `False`.
         """
-        return bool(self.usage)
+        return bool(self.reported_usage)
     
-    @property
+    def exists(self) -> bool:
+        """:return: Whether the path is valid."""
+        return self.absolute_path.exists()
+    
     def is_file(self) -> bool:
-        """
-        Whether the path points to a file or not in the Originals folder.
-        :return: 'True' if `path` is a file; else, 'False'.
-        """
-        return len(_Path(self.path).suffixes) > 0
+        """:return: Whether the path points to a file."""
+        return self.absolute_path.is_file()
+    
+    def is_dir(self) -> bool:
+        """:return: Whether the path points to a directory."""
+        return self.absolute_path.is_dir()
 
 
 @_dataclass
@@ -1387,7 +1394,7 @@ class WwiseProjectInfo:
     title: str
     """The complete text from the Wwise titlebar."""
     
-    path: SystemPath
+    project_path: SystemPath
     """The absolute path of the WPROJ file."""
     
     guid: GUID
@@ -1413,6 +1420,18 @@ class WwiseProjectInfo:
     
     default_conversion: WwiseObjectInfo
     """The default Conversion Settings object."""
+    
+    cache_path: SystemPath
+    """The absolute path to the .cache directory."""
+    
+    soundbanks_path: SystemPath
+    """The absolute path to the SoundBanks output directory."""
+    
+    commands_path: SystemPath
+    """The absolute path to the Commands directory."""
+    
+    originals_path: SystemPath
+    """The absolute path to the Originals directory."""
 
 
 @_dataclass
