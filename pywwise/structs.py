@@ -1381,7 +1381,7 @@ class WwiseProjectInfo:
     title: str
     """The complete text from the Wwise titlebar."""
     
-    path: SystemPath
+    project_path: SystemPath
     """The absolute path of the WPROJ file."""
     
     guid: GUID
@@ -1407,6 +1407,18 @@ class WwiseProjectInfo:
     
     default_conversion: WwiseObjectInfo
     """The default Conversion Settings object."""
+    
+    cache_path: SystemPath
+    """The absolute path to the .cache directory."""
+    
+    soundbanks_path: SystemPath
+    """The absolute path to the SoundBanks output directory."""
+    
+    commands_path: SystemPath
+    """The absolute path to the Commands directory."""
+    
+    originals_path: SystemPath
+    """The absolute path to the Originals directory."""
 
 
 @_dataclass

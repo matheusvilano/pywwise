@@ -91,7 +91,7 @@ class WwiseObject(_ABC):
         Get path.
         :return: Current path.
         """
-        return self._ak.wwise.core.object.get(self._query)[0].path
+        return self._ak.wwise.core.object.get(self._query)[0].project_path
     
     @path.setter
     def path(self, path: ProjectPath):
