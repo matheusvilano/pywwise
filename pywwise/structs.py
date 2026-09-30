@@ -994,27 +994,40 @@ class SourceControlStatus:
 
 @_dataclass
 class SourceFileInfo:
-    """Stores source control and project information about a source file."""
+    """Stores source control and project information about a source file or directory."""
     
-    path: OriginalsPath
-    """The absolute path of the source file."""
+    absolute_path: SystemPath
+    """The absolute path of the source file or directory."""
     
-    folder: OriginalsPath
-    """The absolute path of the source folder."""
+    relative_path: OriginalsPath
+    """The relative path of the source file or directory."""
     
-    usage: tuple[WwiseObjectInfo, ...]
-    """The Wwise objects that use the source file."""
+    reported_usage: tuple[WwiseObjectInfo, ...]
+    """The Wwise objects that use the source file. If `absolute_path` and `relative_path` are pointing to a directory, 
+    this container will be empty."""
     
-    is_missing: bool
-    """Indicates if the file is absent in the source manager."""
+    reported_missing: bool
+    """Indicates if the file or directory is absent in the source manager."""
     
     @property
-    def is_used(self) -> bool:
+    def reported_used(self) -> bool:
         """
         Whether the source file is currently used in the project.
         :return: `True` if `usage` is not empty; else, `False`.
         """
-        return bool(self.usage)
+        return bool(self.reported_usage)
+    
+    def exists(self) -> bool:
+        """:return: Whether the path is valid."""
+        return self.absolute_path.exists()
+    
+    def is_file(self) -> bool:
+        """:return: Whether the path points to a file."""
+        return self.absolute_path.is_file()
+    
+    def is_dir(self) -> bool:
+        """:return: Whether the path points to a directory."""
+        return self.absolute_path.is_dir()
 
 
 @_dataclass
