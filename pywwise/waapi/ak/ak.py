@@ -14,7 +14,7 @@ from pywwise.waapi.ak.wwise import Wwise as _Wwise
 class Ak:
     """ak"""
     
-    _connections = list[_Self]()
+    _connections = dict[_WaapiClient, _Self]()
     """List of all active connections to Wwise."""
     
     def __init__(self, url: str = "ws://127.0.0.1:8080/waapi", allow_exception: bool = False,
@@ -65,12 +65,23 @@ class Ak:
     def get_connections(cls) -> tuple[_Self, ...]:
         """
         Get all active connections to Wwise. Intended only for internal use or debugging. Avoid using this function
-        in your logic. If you need to check if this connection is ative, use **is_connected** instead, or **disconnect**
+        in your logic. If you need to check if this connection is active, use **is_connected** instead, or **disconnect**
         if you are trying to delete this connection.
         :return: The currently active connections to Wwise, in a `tuple`. This container will NOT be updated as
                  connections are created/destroyed. Also, keep in mind that connections cannot be modified this way.
         """
-        return tuple(cls._connections)
+        return tuple(cls._connections.values())
+    
+    @classmethod
+    def get_connection(cls, client: _WaapiClient) -> _Self | None:
+        """
+        Get the active connection associated with the specified WaapiClient object. Intended only for internal use or 
+        debugging. Avoid using this function in your logic. If you need to check if this connection is active, use 
+        **is_connected** instead, or **disconnect** if you are trying to delete this connection.
+        :return: The currently active connections to Wwise, associated with the specified WaapiClient object. Keep in 
+                 mind that connections cannot be modified this way.
+        """
+        return cls._connections.get(client, None)
     
     def is_connected(self) -> bool:
         """
