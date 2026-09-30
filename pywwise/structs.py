@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from typing import Any as _Any, Self as _Self, TYPE_CHECKING as _TYPE_CHECKING
+from pathlib import Path as _Path
 
 if _TYPE_CHECKING:
     from pywwise.descriptors import WwiseProperty
@@ -997,16 +998,13 @@ class SourceFileInfo:
     """Stores source control and project information about a source file."""
     
     path: OriginalsPath
-    """The absolute path of the source file."""
+    """The relative path of the file or folder to Wwise's Originals folder"""
     
     usage: tuple[WwiseObjectInfo, ...]
     """The Wwise objects that use the source file."""
     
     is_missing: bool
     """Indicates if the file is absent in the source manager."""
-    
-    is_file: bool
-    """Indicates if the source file represents a file or a folder in the originals Wwise folder."""
     
     @property
     def is_used(self) -> bool:
@@ -1015,6 +1013,14 @@ class SourceFileInfo:
         :return: `True` if `usage` is not empty; else, `False`.
         """
         return bool(self.usage)
+    
+    @property
+    def is_file(self) -> bool:
+        """
+        Whether the path points to a file or not in the Originals folder.
+        :return: 'True' if `path` is a file; else, 'False'.
+        """
+        return len(_Path(self.path).suffixes) > 0
 
 
 @_dataclass

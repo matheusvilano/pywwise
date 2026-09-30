@@ -115,11 +115,10 @@ class SourceControl:
         
         returns = list[SourceFileInfo]()
         for result in results.get("return", ()):
-            is_file = True if result.get("file") else False
-            path = OriginalsPath(result.get("file")) if is_file else OriginalsPath(result.get("folder"))
+            path = OriginalsPath(result.get("file") or result.get("folder"))
             usage = tuple([WwiseObjectInfo.from_dict(obj) for obj in result.get("usage", ())])
             is_missing = result.get("isMissing", False)
-            returns.append(SourceFileInfo(path, usage, is_missing, is_file))
+            returns.append(SourceFileInfo(path, usage, is_missing))
         return tuple(returns)
     
     def get_status(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> tuple[
