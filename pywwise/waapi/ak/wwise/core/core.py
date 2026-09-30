@@ -125,6 +125,10 @@ class Core:
         current_language_id = GUID(info.get("currentLanguageId", GUID.get_null()))
         reference_language_id = GUID(info.get("referenceLanguageId", GUID.get_null()))
         current_platform_id = GUID(info.get("currentPlatformId", GUID.get_null()))
+        cache_path = SystemPath(info.get("directories", dict()).get("cache", ""))
+        soundbanks_path = SystemPath(info.get("directories", dict()).get("soundBankOutputRoot", ""))
+        commands_path = SystemPath(info.get("directories", dict()).get("commands", ""))
+        originals_path = SystemPath(info.get("directories", dict()).get("originals", ""))
         
         languages = tuple([LanguageInfo(guid=lang["id"], name=lang["name"], short_id=lang["shortId"])
                            for lang in info["languages"]])
@@ -142,7 +146,8 @@ class Core:
                                      EObjectType.CONVERSION, ProjectPath(conversion["path"]))
         
         return WwiseProjectInfo(name, display_title, path, guid, is_dirty, current_language_id, reference_language_id,
-                                current_platform_id, languages, platforms, conversion)
+                                current_platform_id, languages, platforms, conversion, cache_path, soundbanks_path,
+                                commands_path, originals_path)
     
     def ping(self) -> bool:
         """
