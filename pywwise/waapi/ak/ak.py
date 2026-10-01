@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Self as _Self, TypeAlias as _TypeAlias
-
 from waapi import CallbackExecutor, SequentialThreadExecutor, WaapiClient as _WaapiClient
 
 from pywwise.aliases import ListOrTuple
@@ -35,7 +34,7 @@ class Ak:
         self._client = _WaapiClient(url, allow_exception, callback_executor)
         self.soundengine = _SoundEngine(self._client)
         self.wwise = _Wwise(self._client, is_debug_build, is_console_instance, watch_list)
-        self._connections.append(self)
+        Ak._connections[self._client] = self
     
     def __del__(self):
         """Disconnect, then delete this connection object."""
