@@ -1,13 +1,15 @@
 # Copyright 2024 Matheus Vilano
 # SPDX-License-Identifier: Apache-2.0
 
+from types import NoneType as _NoneType
+from typing import Union as _Union
+from waapi import WaapiClient as _WaapiClient
+
+from pywwise import LazyModule
 from pywwise.aliases import ListOrTuple, SystemPath
 from pywwise.enums import EReturnOptions, ESourceControlSearchFilter, ESourceFileReturnOptions
 from pywwise.primitives import OriginalsPath
 from pywwise.structs import LogItem, SourceControlStatus, SourceFileInfo, WwiseObjectInfo
-from types import NoneType as _NoneType
-from typing import Union as _Union
-from waapi import WaapiClient as _WaapiClient
 
 
 class SourceControl:
@@ -86,7 +88,8 @@ class SourceControl:
         return None
     
     def get_source_files(self, folder: str = None, recursive: bool = True,
-                         search_filter: ESourceControlSearchFilter = ESourceControlSearchFilter.ALL) -> tuple[
+                         search_filter: ESourceControlSearchFilter = ESourceControlSearchFilter.ALL,
+                         includes_directories: bool = False) -> tuple[
         SourceFileInfo, ...]:
         """
         https://www.audiokinetic.com/library/edge/?source=SDK&id=ak_wwise_core_sourcecontrol_getsourcefiles.html \n
@@ -94,6 +97,7 @@ class SourceControl:
         :param folder: Base folder for search relative to Originals folder. Default to the Originals folder.
         :param recursive: Search in all subfolders of the base folder.
         :param search_filter: Filter the files are in the search result.
+        :param includes_directories: Whether to include directories in the return list of Original files.
         :return: A tuple containing SourceFileInfo instances, which represent information on each source file found.
                  Empty is no files were found.
         """
@@ -101,23 +105,32 @@ class SourceControl:
         if folder is not None:
             args["folder"] = folder
         
-        options = {"return": [ESourceFileReturnOptions.FOLDER,
-                              ESourceFileReturnOptions.FILE,
+        options = {"return": [ESourceFileReturnOptions.FILE,
                               ESourceFileReturnOptions.USAGE,
                               ESourceFileReturnOptions.IS_MISSING],
                    "objectReturn": EReturnOptions.get_defaults()}
+        
+        if includes_directories:
+            options["return"].append(ESourceFileReturnOptions.FOLDER)
         
         results = self._client.call("ak.wwise.core.sourceControl.getSourceFiles", args, options=options)
         if results is None:
             return ()
         
+        ak_module = LazyModule("pywwise.waapi")
+        connection = ak_module.Ak.get_connection(self._client)
+        assert connection is not None, "A connection must be available to retrieve the project info."
+        
+        proj_info: WwiseProjectInfo = connection.wwise.core.get_project_info()
+        originals_directory = proj_info.originals_path
+        
         returns = list[SourceFileInfo]()
         for result in results.get("return", ()):
-            file = OriginalsPath(result["file"])
-            folder = OriginalsPath(result["folder"])
+            relative_path = result.get("file") or result.get("folder")
+            absolute_path = originals_directory / relative_path
             usage = tuple([WwiseObjectInfo.from_dict(obj) for obj in result.get("usage", ())])
-            is_missing = result["isMissing"]
-            returns.append(SourceFileInfo(file, folder, usage, is_missing))
+            is_missing = result.get("isMissing", False)
+            returns.append(SourceFileInfo(absolute_path, OriginalsPath(relative_path), usage, is_missing))
         return tuple(returns)
     
     def get_status(self, files: ListOrTuple[tuple[SystemPath, SystemPath]]) -> tuple[
