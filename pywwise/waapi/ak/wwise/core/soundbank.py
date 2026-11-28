@@ -181,7 +181,7 @@ class SoundBank:
         args = dict()
         
         if sound_banks:  # if valid and not empty
-            args["soundbanks"] = [{"name": sound_bank} for sound_bank in sound_banks]
+            args["soundbanks"] = [sound_bank.dictionary for sound_bank in sound_banks]
         else:
             args["rebuildSoundBanks"] = True
         
